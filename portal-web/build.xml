@@ -6,12 +6,12 @@
 	<property name="war.file" value="${ant.project.name}" />
 
 	<property name="alloy-font-awesome.file" value="alloy-font-awesome-1.0.0.zip" />
-	<property name="ckeditor.file" value="ckeditor_4.0.3_liferay.zip" />
+	<property name="ckeditor.file" value="ckeditor_4.3.5_liferay.zip" />
 	<property name="fckeditor.file" value="FCKeditor_2.6.3.zip" />
-	<property name="scayt.file" value="scayt_4.0.3.zip" />
+	<property name="scayt.file" value="scayt_4.3.5.zip" />
 	<property name="tinymce.file" value="tinymce_3.5.6.zip" />
 	<property name="vaadin.file" value="vaadin-6.8.12-liferay.zip" />
-	<property name="wsc.file" value="wsc_4.0.3.zip" />
+	<property name="wsc.file" value="wsc_4.3.5.zip" />
 
 	<path id="jspc.common.classpath">
 		<pathelement path="docroot/WEB-INF/classes" />
