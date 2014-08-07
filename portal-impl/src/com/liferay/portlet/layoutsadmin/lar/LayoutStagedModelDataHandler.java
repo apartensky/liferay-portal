@@ -60,7 +60,6 @@ import com.liferay.portal.service.ImageLocalServiceUtil;
 import com.liferay.portal.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
 import com.liferay.portal.service.LayoutPrototypeLocalServiceUtil;
-import com.liferay.portal.service.LayoutRevisionLocalServiceUtil;
 import com.liferay.portal.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.service.PortletLocalServiceUtil;
@@ -144,37 +143,9 @@ public class LayoutStagedModelDataHandler
 			PortletDataContext portletDataContext, Layout layout)
 		throws Exception {
 
-		LayoutRevision layoutRevision = null;
-
-		boolean exportLAR = MapUtil.getBoolean(
-			portletDataContext.getParameterMap(), "exportLAR");
-
-		if (!exportLAR && LayoutStagingUtil.isBranchingLayout(layout) &&
-			!layout.isTypeURL()) {
-
-			long layoutSetBranchId = MapUtil.getLong(
-				portletDataContext.getParameterMap(), "layoutSetBranchId");
-
-			if (layoutSetBranchId <= 0) {
-				return;
-			}
-
-			layoutRevision = LayoutRevisionLocalServiceUtil.fetchLayoutRevision(
-				layoutSetBranchId, true, layout.getPlid());
-
-			if (layoutRevision == null) {
-				return;
-			}
-
-			LayoutStagingHandler layoutStagingHandler =
-				LayoutStagingUtil.getLayoutStagingHandler(layout);
-
-			layoutStagingHandler.setLayoutRevision(layoutRevision);
-		}
-
 		Element layoutElement = portletDataContext.getExportDataElement(layout);
 
-		populateElementLayoutMetadata(layoutElement, layout, layoutRevision);
+		populateElementLayoutMetadata(layoutElement, layout);
 
 		layoutElement.addAttribute("action", Constants.ADD);
 
@@ -1089,8 +1060,15 @@ public class LayoutStagedModelDataHandler
 	}
 
 	protected void populateElementLayoutMetadata(
-			Element layoutElement, Layout layout, LayoutRevision layoutRevision)
+			Element layoutElement, Layout layout)
 		throws Exception {
+
+		LayoutStagingHandler layoutStagingHandler =
+			LayoutStagingUtil.getLayoutStagingHandler(layout);
+
+		if (layoutStagingHandler != null) {
+			LayoutRevision layoutRevision =
+				layoutStagingHandler.getLayoutRevision();
 
 		if (layoutRevision != null) {
 			layoutElement.addAttribute(
@@ -1103,7 +1081,9 @@ public class LayoutStagedModelDataHandler
 			LayoutBranch layoutBranch = layoutRevision.getLayoutBranch();
 
 			layoutElement.addAttribute(
-				"layout-branch-name", String.valueOf(layoutBranch.getName()));
+					"layout-branch-name",
+					String.valueOf(layoutBranch.getName()));
+			}
 		}
 
 		layoutElement.addAttribute("layout-uuid", layout.getUuid());
